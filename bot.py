@@ -1,5 +1,4 @@
 import discord
-import os
 from captcha.image import ImageCaptcha
 import random
 import time
@@ -67,7 +66,4 @@ async def on_message(message):
             await message.channel.send(embed=tjdrhdEmbed)
             print(f'{message.author} 님이 틀린숫자로 인해 등업을 실패함.')
 
-
-            
-access_token = os.environ['BOT_TOKEN']
 client.run(token)
