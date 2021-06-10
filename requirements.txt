@@ -1,0 +1,6 @@
+discord.py==0.16.12
+import discord.py
+from captcha.image import ImageCaptcha.py
+import random.py.py
+import time.py
+import asyncio.py
