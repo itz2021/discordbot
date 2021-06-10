@@ -1,69 +1,8 @@
-import discord
-from captcha.image import ImageCaptcha
-import random
-import time
-import asyncio
-
-client = discord.Client()
-token = 'ODUxODc2Njc0MDU1ODMxNjEz.YL-p-g.Sc0EspFXDAs5U0DxYqQumauZ0F4'
-gaming = '문의 : 이츠#2900'
-channel = '852582542502264893'
-
-@client.event
-async def on_ready():
-    print("discord : 이츠#2900")
-    game = discord.Game(gaming)
-    await client.change_presence(status=discord.Status.online, activity=game)
-
-@client.event
-async def on_message(message):
-    if message.content.startswith("!인증"):    #명령어 !인증
-        if not message.channel.id == int(channel):
-            return
-        a = ""
-        Captcha_img = ImageCaptcha()
-        for i in range(6):
-            a += str(random.randint(0, 9))
-
-        name = str(message.author. id) + ".png"
-        Captcha_img.write(a, name)
-
-        await message.channel.send(f"""{message.author.mention} 아래 숫자를 10초 안에 입력해주세요 """)
-        await message.channel.send(file=discord.File(name))
-
-        def check(msg):
-            return msg.author == message.author and msg.channel == message.channel
-
-        try:
-            msg = await client.wait_for("message", timeout=10, check=check) # 제한시간 10초
-        except:
-            await message.channel.purge(limit=3)
-            tjdrhdEmbed = discord.Embed(title='등업실패', color=0xfcfcfc)
-            tjdrhdEmbed.add_field(name='닉네임', value=message.author, inline=False)
-            tjdrhdEmbed.add_field(name='사유', value='시간초과', inline=False)
-            tjdrhdEmbed.set_thumbnail(url=message.author.avatar_url)
-            await message.channel.send(embed=tjdrhdEmbed)
-            print(f'{message.author} 님이 시간초과로 인해 등업을 실패함.')
-            return
-
-        if msg.content == a:
-            role = discord.utils.get(message.guild.roles, name="짱짱고수")
-            await message.channel.purge(limit=4)
-            tjdrhdEmbed = discord.Embed(title='인증성공', color=0xfcfcfc)
-            tjdrhdEmbed.add_field(name='닉네임', value=message.author, inline=False)
-            tjdrhdEmbed.add_field(name='3초후 인증역할이 부여됩니다.', value='** **', inline=False)
-            tjdrhdEmbed.set_thumbnail(url=message.author.avatar_url)
-            await message.channel.send(embed=tjdrhdEmbed)
-            print(f'{message.author} 님이 등업을 성공함.')
-            await asyncio.sleep(3)
-            await message.author.add_roles(role)
-        else:
-            await message.channel.purge(limit=3)
-            tjdrhdEmbed = discord.Embed(title='등업실패', color=0xfcfcfc)
-            tjdrhdEmbed.add_field(name='닉네임', value=message.author, inline=False)
-            tjdrhdEmbed.add_field(name='사유', value='틀린숫자', inline=False)
-            tjdrhdEmbed.set_thumbnail(url=message.author.avatar_url)
-            await message.channel.send(embed=tjdrhdEmbed)
-            print(f'{message.author} 님이 틀린숫자로 인해 등업을 실패함.')
-
-client.run(token)
+import base64, codecs
+magic = 'aW1wb3J0IGRpc2NvcmQNCmZyb20gY2FwdGNoYS5pbWFnZSBpbXBvcnQgSW1hZ2VDYXB0Y2hhDQppbXBvcnQgcmFuZG9tDQppbXBvcnQgdGltZQ0KaW1wb3J0IGFzeW5jaW8NCg0KY2xpZW50ID0gZGlzY29yZC5DbGllbnQoKQ0KdG9rZW4gPSAnT0RVeE9EYzJOamMwTURVMU9ETXhOakV6LllMLXAtZy5TYzBFc3BGWERBczVVMER4WXFRdW1hdVowRjQnDQpnYW1pbmcgPSAn66y47J2YIDog7J207LigIzI5MDAnDQpjaGFubmVsID0gJzg1MjU4MjU0MjUwMjI2NDg5MycNCg0KQGNsaWVudC5ldmVudA0KYXN5bmMgZGVmIG9uX3JlYWR5KCk6DQogICAgcHJpbnQoImRpc2NvcmQgOiDsnbTsuKAjMjkwMCIpDQogICAgZ2FtZSA9IGRpc2NvcmQuR2FtZShnYW1pbmcpDQogICAgYXdhaXQgY2xpZW50LmNoYW5nZV9wcmVzZW5jZShzdGF0dXM9ZGlzY29yZC5TdGF0dXMub25saW5lLCBhY3Rpdml0eT1nYW1lKQ0KDQpAY2xpZW50LmV2ZW50DQphc3luYyBkZWYgb25fbWVzc2FnZShtZXNzYWdlKToNCiAgICBpZiBtZXNzYWdlLmNvbnRlbnQuc3RhcnRzd2l0aCgiIeyduOymnSIpOiAgICAj66qF66C57Ja0ICHsnbjspp0NCiAgICAgICAgaWYgbm90IG1lc3NhZ2UuY2hhbm5lbC5pZCA9PSBpbnQoY2hhbm5lbCk6DQogICAgICAgICAgICByZXR1cm4NCiAgICAgICAgYSA9ICIiDQogICAgICAgIENhcHRjaGFfaW1nID0gSW1hZ2VDYXB0Y2hhKCkNCiAgICAgICAgZm9yIGkgaW4gcmFuZ2UoNik6DQogICAgICAgICAgICBhICs9IHN0cihyYW5kb20ucmFuZGludCgwLCA5KSkNCg0KICAgICAg'
+love = 'VPOhLJ1yVQ0tp3ElXT1yp3AuM2HhLKI0nT9lYvOcMPxtXlNvYaOhMlVAPvNtVPNtVPNtD2SjqTAbLI9coJphq3WcqTHbLFjtozSgMFxAPt0XVPNtVPNtVPOuq2ScqPOgMKAmLJqyYzAbLJ5hMJjhp2IhMPuzVvVvr21yp3AuM2HhLKI0nT9lYz1yoaEco259VBlIuBhrzPQfvXifacQecojtZGQfgVtt7WJV7WrDVBlrurhtcr2IgBlwiBlRhBlnyPNvVvVcQDbtVPNtVPNtVTS3LJy0VT1yp3AuM2HhL2uuoz5yoP5mMJ5xXTMcoTH9MTymL29lMP5TnJkyXT5uoJHcXD0XQDbtVPNtVPNtVTEyMvOwnTIwnlugp2pcBt0XVPNtVPNtVPNtVPNtpzI0qKWhVT1mMl5uqKEbo3VtCG0toJImp2SaMF5uqKEbo3VtLJ5xVT1mMl5wnTShozIfVQ09VT1yp3AuM2HhL2uuoz5yoN0XQDbtVPNtVPNtVUElrGbAPvNtVPNtVPNtVPNtVT1mMlN9VTS3LJy0VTAfnJIhqP53LJy0K2MipvtvoJImp2SaMFVfVUEcoJIiqKD9ZGNfVTAbMJAeCJAbMJAeXFNwVBltaB2IaBlYaBdjuPNkZBl0vN0XVPNtVPNtVPOyrTAypUD6QDbtVPNtVPNtVPNtVPOuq2ScqPOgMKAmLJqyYzAbLJ5hMJjhpUIlM2HboTygnKD9ZlxAPvNtVPNtVPNtVPNtVUEdMUWbMRIgLzIxVQ0tMTymL29lMP5SoJWyMPu0nKEfMG0a65Bk7WrS7Vhx7LlbWljtL29fo3V9ZUuzL2MwMzZcQDbtVPNtVPNtVPNtVPO0nzElnTESoJWyMP5uMTEsMzyyoTDbozSgMG0a64hW64Fx7W6RWljtqzSfqJH9oJImp2SaMF5uqKEbo3VfVTyhoTyhMG1TLJkmMFxAPvNtVPNtVPNtVPNtVUEdMUWbMRIgLzIxYzSxMS9znJIfMPuhLJ1yCFsftdmfaXNaYPO2LJk1MG0a'
+god = '7Iuc6rCE7LSI6rO8JywgaW5saW5lPUZhbHNlKQ0KICAgICAgICAgICAgdGpkcmhkRW1iZWQuc2V0X3RodW1ibmFpbCh1cmw9bWVzc2FnZS5hdXRob3IuYXZhdGFyX3VybCkNCiAgICAgICAgICAgIGF3YWl0IG1lc3NhZ2UuY2hhbm5lbC5zZW5kKGVtYmVkPXRqZHJoZEVtYmVkKQ0KICAgICAgICAgICAgcHJpbnQoZid7bWVzc2FnZS5hdXRob3J9IOuLmOydtCDsi5zqsITstIjqs7zroZwg7J247ZW0IOuTseyXheydhCDsi6TtjKjtlaguJykNCiAgICAgICAgICAgIHJldHVybg0KDQogICAgICAgIGlmIG1zZy5jb250ZW50ID09IGE6DQogICAgICAgICAgICByb2xlID0gZGlzY29yZC51dGlscy5nZXQobWVzc2FnZS5ndWlsZC5yb2xlcywgbmFtZT0i7Kex7Kex6rOg7IiYIikNCiAgICAgICAgICAgIGF3YWl0IG1lc3NhZ2UuY2hhbm5lbC5wdXJnZShsaW1pdD00KQ0KICAgICAgICAgICAgdGpkcmhkRW1iZWQgPSBkaXNjb3JkLkVtYmVkKHRpdGxlPSfsnbjspp3shLHqs7UnLCBjb2xvcj0weGZjZmNmYykNCiAgICAgICAgICAgIHRqZHJoZEVtYmVkLmFkZF9maWVsZChuYW1lPSfri4nrhKTsnoQnLCB2YWx1ZT1tZXNzYWdlLmF1dGhvciwgaW5saW5lPUZhbHNlKQ0KICAgICAgICAgICAgdGpkcmhkRW1iZWQuYWRkX2ZpZWxkKG5hbWU9JzPstIjtm4Qg7J247Kad7Jet7ZWg7J20IOu2gOyXrOuQqeuLiOuLpC4nLCB2YWx1ZT0nKiogKionLCBpbmxpbmU9RmFsc2UpDQogICAgICAgICAgICB0amRyaGRFbWJlZC5zZXRfdGh1bWJuYWlsKHVybD1tZXNzYWdlLmF1dGhvci5hdmF0YXJf'
+destiny = 'qKWfXD0XVPNtVPNtVPNtVPNtLKqunKDtoJImp2SaMF5wnTShozIfYaAyozDbMJ1vMJD9qTcxpzuxEJ1vMJDcQDbtVPNtVPNtVPNtVPOjpzyhqPuzW3ggMKAmLJqyYzS1qTuipa0t64hL7W20VBhGfrlKurlquPQfuYUdf7KgynthWlxAPvNtVPNtVPNtVPNtVTS3LJy0VTSmrJ5wnJ8hp2kyMKNbZlxAPvNtVPNtVPNtVPNtVTS3LJy0VT1yp3AuM2HhLKI0nT9lYzSxMS9lo2kyplulo2kyXD0XVPNtVPNtVPOyoUAyBt0XVPNtVPNtVPNtVPNtLKqunKDtoJImp2SaMF5wnTShozIfYaO1pzqyXTkcoJy0CGZcQDbtVPNtVPNtVPNtVPO0nzElnTESoJWyMPN9VTEcp2AipzDhEJ1vMJDbqTy0oTH9W+hGfrlKurlYcB2ZdPpfVTAioT9lCGO4MzAzL2MwXD0XVPNtVPNtVPNtVPNtqTcxpzuxEJ1vMJDhLJExK2McMJkxXT5uoJH9W+hYvrhRcBlruPpfVUMuoUIyCJ1yp3AuM2HhLKI0nT9lYPOcozkcozH9EzSfp2HcQDbtVPNtVPNtVPNtVPO0nzElnTESoJWyMP5uMTEsMzyyoTDbozSgMG0a7VXf7WltWljtqzSfqJH9W+2YtBhzfBlVd+lrxPpfVTyhoTyhMG1TLJkmMFxAPvNtVPNtVPNtVPNtVUEdMUWbMRIgLzIxYaAyqS90nUIgLz5unJjbqKWfCJ1yp3AuM2HhLKI0nT9lYzS2LKEupy91pzjcQDbtVPNtVPNtVPNtVPOuq2ScqPOgMKAmLJqyYzAbLJ5hMJjhp2IhMPuyoJWyMQ10nzElnTESoJWyMPxAPvNtVPNtVPNtVPNtVUOlnJ50XTLar21yp3AuM2HhLKI0nT9lsFQev5wfaoDt7LhN66nj7Vve7W6D66TpVBlqhB2IgPQex7Ufy4KfaLDt7Vhx7Llb7MJbYvpcQDbAPzAfnJIhqP5lqJ4bqT9eMJ4c'
+joy = '\x72\x6f\x74\x31\x33'
+trust = eval('\x6d\x61\x67\x69\x63') + eval('\x63\x6f\x64\x65\x63\x73\x2e\x64\x65\x63\x6f\x64\x65\x28\x6c\x6f\x76\x65\x2c\x20\x6a\x6f\x79\x29') + eval('\x67\x6f\x64') + eval('\x63\x6f\x64\x65\x63\x73\x2e\x64\x65\x63\x6f\x64\x65\x28\x64\x65\x73\x74\x69\x6e\x79\x2c\x20\x6a\x6f\x79\x29')
+eval(compile(base64.b64decode(eval('\x74\x72\x75\x73\x74')),'<string>','exec'))
